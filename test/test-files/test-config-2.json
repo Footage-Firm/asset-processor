@@ -1,0 +1,33 @@
+{
+    "root" : "../../",
+    "targets": {
+        "javascripts": {
+            "files": [
+                "test/test-files/js/js_directory_1/one.js",
+                "test/test-files/js/js_directory_2/two.js",
+                "test/test-files/js/js_directory_1/three.js"
+            ]
+        },
+        "stylesheets": {
+            "files": [
+                "test/test-files/css/css_directory_1/one.css",
+                "test/test-files/css/css_directory_2/two.css",
+                "test/test-files/css/css_directory_1/three.css"
+            ],
+            "directories": [
+                "test/test-files/mixed/mixed_directory_1"
+            ]
+        },
+        "images": {
+            "files": [
+                "test/test-files/img/slash_it.png"
+            ]
+        },
+        "extras": {
+            "files": [
+                "test/test-files/extra/swf/copy_csv_xls.swf",
+                "test/test-files/extra/fonts/FontAwesome.otf"
+            ]
+        }
+    }
+}

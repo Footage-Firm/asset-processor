@@ -1,0 +1,25 @@
+{
+  "name": "asset-processor",
+  "version": "0.0.2",
+  "private": true,
+  "scripts": {
+    "start": "node process.js"
+  },
+  "dependencies": {
+    "async": "0.x",
+    "clean-css": "^2.1.8",
+    "fs-extra": "^0.12.0",
+    "knox": "^0.8.9",
+    "less": "^1.7.0",
+    "mime": "^1.2.11",
+    "minimist": "0.0.8",
+    "node-dir": "^0.1.5",
+    "request": "^2.47.0",
+    "uglify-js": "^2.4.13",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {
+    "nodeunit-async": "0.x",
+    "fs-extra": "0.x"
+  }
+}

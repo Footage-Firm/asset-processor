@@ -1,0 +1,12 @@
+#Node Stuff
+node_modules
+
+#credentials used by unit tests
+test/credentials.json
+
+#unit test generated files
+test/test-files/import/
+
+#OS stuff
+.DS_Store
+._.DS_Store

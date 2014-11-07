@@ -1,0 +1,49 @@
+{
+    "targets": {
+        "javascripts": {
+            "directories": [
+                "js",
+                "mixed"
+            ],
+            "exclude": [
+                "js/js_directory_1/excludedFile.js",
+                "js/js_excluded"
+            ],
+            "preference": [
+                "js/js_directory_1/one.js",
+                "js/js_directory_2/two.js",
+                "js/js_directory_1/three.js",
+                "mixed/four.js",
+                "mixed/mixed_directory_1/five.js",
+                "mixed/mixed_directory_2/six.js"
+            ]
+        },
+        "stylesheets": {
+            "directories": [
+                "css",
+                "mixed"
+            ],
+            "preference": [
+                "css/css_directory_1/one.css",
+                "css/css_directory_2/two.css",
+                "css/css_directory_1/three.css",
+                "mixed/mixed_directory_1/four.css",
+                "css/css_directory_2/five.css",
+                "css/css_priority/priority2_butfirst.css",
+                "css/css_priority/"
+            ]
+        },
+        "images": {
+            "root": "img",
+            "directories": [
+                "."
+            ]
+        },
+        "extras": {
+            "root": "extra"
+        }
+    },
+    "s3": {
+        "cloudfrontMapping": "dummyCfMapping"
+    }
+}

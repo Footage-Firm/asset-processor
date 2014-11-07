@@ -1,0 +1,19 @@
+@import "//fonts.googleapis.com/css?family=Roboto:400,300,500,500italic,700,900,400italic,700italic";
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url('https://themes.googleusercontent.com/static/fonts/opensans/v8/MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+}
+
+/* third file (less should be compiled to css) */
+.three {
+  height: 3px;
+}
+.three p {
+  font-weight: bold;
+}
+.three p:hover {
+  text-decoration: underline;
+}
