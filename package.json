@@ -1,7 +1,6 @@
 {
   "name": "asset-processor",
   "version": "0.0.2",
-  "private": true,
   "scripts": {
     "start": "node process.js"
   },

@@ -149,14 +149,16 @@ versionChecker.checkRepoUpToDate(__dirname, function(err, upToDate) {
             next(null, result);
         }],
         writeResult: ['formatResult', function (next, results) {
-            // allow the use of convention for asset path names
+            // allow the use of convention for asset path names. So if we are writing the processed asset list and no output
+            // filename is specified, we'll use path/name of configuration file except replace "config" with "assets".
             var outputFilename = path.basename(configPath, path.extname(configPath)).replace(/(asset)?config$/i, '') + 'Assets.json';
 
             if (outputFilename === 'Assets.json') {
-                // no prefix here, lets make it lowercase
+                // edge case where config is called "config.json" and there is no prefix here, lets just make output file name start lowercase.
                 outputFilename = outputFilename.toLowerCase();
             }
 
+            // now we figure out if we're actually going to write a file or not
             var outputPath = typeof args.o !== 'undefined'
                 ? args.o === true ? path.resolve(path.dirname(configPath), outputFilename)
                 : args.o
