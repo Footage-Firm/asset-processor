@@ -437,18 +437,21 @@ exports.testImportLatestStylesheets = function(test) {
     fs.writeFileSync(expectedFile1, 'existing file1');
     fs.writeFileSync(expectedFile2, 'existing file2');
 
-    test.expect(2);
+    test.expect(4);
 
     th.runTest(test, {
         uploadExtrasToCdn: [function(next) {
             otherAssetProcessor.importLatestStylesheets(next);
         }],
-        assertResult: ['uploadExtrasToCdn', function(next, results) {
-            var stats1 = fs.existsSync(expectedFile1) && fs.statSync(expectedFile1) || {};
-            var stats2 = fs.existsSync(expectedFile2) && fs.statSync(expectedFile2) || {};
+        assertResult: ['uploadExtrasToCdn', function(next) {
+            var css1 = fs.existsSync(expectedFile1) && fs.readFileSync(expectedFile1, 'utf8');
+            var css2 = fs.existsSync(expectedFile2) && fs.readFileSync(expectedFile2, 'utf8');
 
-            test.ok(stats1.size > 1000);
-            test.ok(stats2.size > 200);
+
+            test.ok(css1 && css1.length > 1000);
+            test.ok(css1 && css1.indexOf('mapped/path/to/images/home/home-notes-dark-blue.png') > 0);
+            test.ok(css2 && css2.length > 200);
+            test.ok(css2 && css2.indexOf('another/mapping/for/fonts/fontawesome-webfont.eot') > 0);
 
             next();
         }]

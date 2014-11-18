@@ -28,7 +28,11 @@
                 "sources": [
                     "https://api.github.com/repos/Footage-Firm/StockBlocks/contents/assets/audioblocks/stylesheets/audioblocks-style-custom.css",
                     "https://github.com/Footage-Firm/StockBlocks/blob/master/assets/common/stylesheets/global-style-custom.css"
-                ]
+                ],
+                "mappings": {
+                    "../images": "mapped/path/to/images",
+                    "../extras/fonts": "another/mapping/for/fonts"
+                }
             },
             "preference": [
                 "css/css_directory_1/one.css",
