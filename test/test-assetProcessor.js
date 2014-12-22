@@ -108,10 +108,10 @@ exports.testGetImageFiles = function(test) {
         assertResult: ['getImageFiles', function(next, results) {
             var files = results && results.getImageFiles;
             var expected = [
-                'img_directory_1/grey_wash_wall.png',
-                'img_directory_1/mooning.png',
-                'img_directory_2/purty_wood.png',
-                'slash_it.png'
+                'img/img_directory_1/grey_wash_wall.png',
+                'img/img_directory_1/mooning.png',
+                'img/img_directory_2/purty_wood.png',
+                'img/slash_it.png'
             ];
             test.deepEqual(expected, files);
             next();
@@ -130,12 +130,12 @@ exports.testGetExtraFiles = function(test) {
         assertResult: ['getExtraFiles', function(next, results) {
             var files = results && results.getExtraFiles;
             var expected = [
-                'fonts/FontAwesome.otf',
-                'fonts/fontawesome-webfont.eot',
-                'fonts/fontawesome-webfont.svg',
-                'fonts/fontawesome-webfont.ttf',
-                'fonts/fontawesome-webfont.woff',
-                'swf/copy_csv_xls.swf'
+                'extra/fonts/FontAwesome.otf',
+                'extra/fonts/fontawesome-webfont.eot',
+                'extra/fonts/fontawesome-webfont.svg',
+                'extra/fonts/fontawesome-webfont.ttf',
+                'extra/fonts/fontawesome-webfont.woff',
+                'extra/swf/copy_csv_xls.swf'
             ];
             test.deepEqual(expected, files);
             next();
@@ -220,7 +220,7 @@ exports.testUploadJavaScriptToCdn = function(test) {
             test.ok(results.uploadJavaScriptToCdn);
             test.ok(js);
             test.equal(-1, js.indexOf('longVariableName'));
-            test.ok(js.indexOf('\n') > 100); // newline added at end of file for source mapping, but none before that
+            test.ok(js.indexOf('\n') === -1 || js.indexOf('\n') > 100); // newline added at end of file for source mapping, but none before that
             test.ok(js.indexOf('"1"') < js.indexOf('"2"'));
             test.ok(js.indexOf('"2"') < js.indexOf('"3"'));
             test.ok(js.indexOf('"3"') < js.indexOf('"4"'));
