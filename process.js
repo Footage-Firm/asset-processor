@@ -86,8 +86,7 @@ versionChecker.checkRepoUpToDate(__dirname, function(err, upToDate) {
         compileLess: ['importStylesheets', function (next) {
             if (!args['skip-less']) {
                 //for now less compiling seems to be broken
-                //assetProcessor.compileLessFiles(next);
-                next();
+                assetProcessor.compileLessFiles(next);
             } else {
                 next();
             }
