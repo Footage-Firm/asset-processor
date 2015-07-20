@@ -26,8 +26,8 @@
             "imports": {
                 "destination": "import",
                 "sources": [
-                    "https://api.github.com/repos/Footage-Firm/StockBlocks/contents/assets/audioblocks/stylesheets/audioblocks-style-custom.css",
-                    "https://github.com/Footage-Firm/StockBlocks/blob/master/assets/common/stylesheets/global-style-custom.css"
+                    "https://api.github.com/repos/Footage-Firm/StockBlocks/contents/public/assets/audioblocks/stylesheets/audioblocks-style-custom.css",
+                    "https://github.com/Footage-Firm/StockBlocks/blob/master/public/assets/common/stylesheets/global-style-custom.css"
                 ],
                 "mappings": {
                     "../images": "mapped/path/to/images",
