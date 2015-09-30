@@ -234,7 +234,7 @@ exports.testUploadJavaScriptToCdn = function(test) {
 
 exports.testUploadCssToCdn = function(test) {
 
-    test.expect(12);
+    test.expect(13);
 
     th.runTest(test, {
         uploadCssToCdn: [function(next) {
@@ -262,6 +262,7 @@ exports.testUploadCssToCdn = function(test) {
             test.notEqual(-1, css.indexOf('url(https://s3.amazonaws.com/'+bucket+'/extra/fonts/fontawesome-webfont.woff)'));
             test.notEqual(-1, css.indexOf('url(//fonts.googleapis.com/css?family=Roboto:400,300,500,500italic,700,900,400italic,700italic)'));
             test.notEqual(-1, css.indexOf('url(https://themes.googleusercontent.com/static/fonts/opensans/v8/MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff)'));
+            test.ok(css.indexOf('url(data:image/png;base64') > 0);
 
             next();
         }]
