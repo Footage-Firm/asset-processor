@@ -62,7 +62,8 @@ versionChecker.checkRepoUpToDate(__dirname, function(err, upToDate) {
         console.log('Repository is'+(!upToDate ? ' not' : '')+' up to date');
     }
 
-    if (!upToDate) {
+    var ignoreVersioning = args.i || args.ignore;
+    if (!upToDate && !ignoreVersioning) {
         console.error('A new version of assetProcessor is available--please update (git pull)');
         process.exit(1);
     }
