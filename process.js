@@ -176,6 +176,7 @@ versionChecker.checkRepoUpToDate(__dirname, function(err, upToDate) {
         }]
     }, function (err) {
         if (err) {
+            console.error(err);
             throw err;
         }
     });
