@@ -10,3 +10,6 @@ test/test-files/import/
 #OS stuff
 .DS_Store
 ._.DS_Store
+
+#ide
+.idea
