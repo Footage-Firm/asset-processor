@@ -15,7 +15,8 @@
                 "js/js_directory_1/three.js",
                 "mixed/four.js",
                 "mixed/mixed_directory_1/five.js",
-                "mixed/mixed_directory_2/six.js"
+                "mixed/mixed_directory_2/six.js",
+                "js/js_excluded/shouldBeIncluded.js"
             ]
         },
         "stylesheets": {

@@ -54,6 +54,7 @@ exports.testGetJavaScriptFiles = function(test) {
                 'mixed/four.js',
                 'mixed/mixed_directory_1/five.js',
                 'mixed/mixed_directory_2/six.js',
+                'js/js_excluded/shouldBeIncluded.js',
                 'js/js_directory_1/anywhere1.js',
                 'js/js_directory_2/anywhere2.js',
                 'mixed/anywhere5.js',
