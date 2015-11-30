@@ -2,7 +2,8 @@
   "name": "asset-processor",
   "version": "0.0.9",
   "scripts": {
-    "start": "node process.js"
+    "start": "node process.js",
+    "test": "nodeunit"
   },
   "dependencies": {
     "async": "0.x",
