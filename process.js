@@ -52,134 +52,131 @@ if (args.v || args.verbose) {
     console.log('Checking if repository is up to date');
 }
 
-versionChecker.checkRepoUpToDate(__dirname, function(err, upToDate) {
+async.auto({
+    versionUpToDate: [function(next) {
+        var ignoreVersioning = args.i || args.ignore;
+        if (!ignoreVersioning) {
+            versionChecker.checkRepoUpToDate(__dirname, next)
+        } else {
+            next(null, true);
+        }
+    }],
+    getJavaScriptFiles: ['versionUpToDate', function(next, results) {
 
+        var upToDate = results.versionUpToDate;
+
+        if (args.v || args.verbose) {
+            console.log('Repository is' + (!upToDate ? ' not' : '') + ' up to date');
+        }
+
+        if (!args['skip-js']) {
+            assetProcessor.getJavaScriptFiles(next);
+        } else {
+            next();
+        }
+    }],
+    importStylesheets: ['versionUpToDate', function(next) {
+        if (args['import']) {
+            assetProcessor.importLatestStylesheets(next);
+        } else {
+            next();
+        }
+    }],
+    compileLess: ['importStylesheets', function(next) {
+        if (!args['skip-less']) {
+            //for now less compiling seems to be broken
+            assetProcessor.compileLessFiles(next);
+        } else {
+            next();
+        }
+    }],
+    getCssFiles: ['compileLess', function(next) {
+        if (!args['skip-css']) {
+            assetProcessor.getCssFiles(next);
+        } else {
+            next();
+        }
+    }],
+    getImageFiles: ['versionUpToDate', function(next) {
+        if (args['list-images']) {
+            assetProcessor.getImageFiles(next);
+        } else {
+            next();
+        }
+    }],
+    getExtraFiles: ['versionUpToDate', function(next) {
+        if (args['list-extras']) {
+            assetProcessor.getExtraFiles(next);
+        } else {
+            next();
+        }
+    }],
+    ensureAssets: ['versionUpToDate', function(next) {
+        if (args.u || args.upload) {
+            console.log('Ensuring assets');
+            assetProcessor.ensureAssets(next);
+        } else {
+            next();
+        }
+    }],
+    formatResult: ['getJavaScriptFiles', 'getCssFiles', 'getImageFiles', 'getExtraFiles', 'ensureAssets', function(next, results) {
+        var result = {};
+        if (results.getJavaScriptFiles) {
+            result.javascripts = results.getJavaScriptFiles;
+        }
+        if (results.getCssFiles) {
+            result.stylesheets = results.getCssFiles;
+        }
+        if (results.getImageFiles) {
+            result.images = results.getImageFiles;
+        }
+        if (results.getExtraFiles) {
+            result.extras = results.getExtraFiles;
+        }
+        if (results.ensureAssets) {
+            result.cdn = results.ensureAssets;
+            // we don't want to output if things have changed or not
+            if (result.cdn) {
+                delete result.cdn.jsChanged;
+                delete result.cdn.cssChanged;
+                delete result.cdn.imagesChanged;
+                delete result.cdn.extrasChanged;
+            }
+        }
+        result = JSON.stringify(result, undefined, 4);
+        next(null, result);
+    }],
+    writeResult: ['formatResult', function(next, results) {
+        // allow the use of convention for asset path names. So if we are writing the processed asset list and no output
+        // filename is specified, we'll use path/name of configuration file except replace "config" with "assets".
+        var outputFilename = path.basename(configPath, path.extname(configPath)).replace(/(asset)?config$/i, '') + 'Assets.json';
+
+        if (outputFilename === 'Assets.json') {
+            // edge case where config is called "config.json" and there is no prefix here, lets just make output file name start lowercase.
+            outputFilename = outputFilename.toLowerCase();
+        }
+
+        // now we figure out if we're actually going to write a file or not
+        var outputPath = typeof args.o !== 'undefined'
+            ? args.o === true ? path.resolve(path.dirname(configPath), outputFilename)
+            : args.o
+            : null;
+
+        if (outputPath) {
+            // write to file
+            console.log('Writing asset file to ' + outputPath);
+            fs.writeFile(outputPath, results.formatResult, next);
+        } else {
+            // output to console
+            console.log(results.formatResult);
+            next();
+        }
+    }]
+}, function(err) {
     if (err) {
+        console.error(err);
         throw err;
     }
-
-    if (args.v || args.verbose) {
-        console.log('Repository is'+(!upToDate ? ' not' : '')+' up to date');
-    }
-
-    var ignoreVersioning = args.i || args.ignore;
-    if (!upToDate && !ignoreVersioning) {
-        console.error('A new version of assetProcessor is available--please update (git pull)');
-        process.exit(1);
-    }
-
-    async.auto({
-
-        getJavaScriptFiles: [function(next) {
-            if (!args['skip-js']) {
-                assetProcessor.getJavaScriptFiles(next);
-            } else {
-                next();
-            }
-        }],
-        importStylesheets: [function(next) {
-            if (args['import']) {
-                assetProcessor.importLatestStylesheets(next);
-            } else {
-                next();
-            }
-        }],
-        compileLess: ['importStylesheets', function (next) {
-            if (!args['skip-less']) {
-                //for now less compiling seems to be broken
-                assetProcessor.compileLessFiles(next);
-            } else {
-                next();
-            }
-        }],
-        getCssFiles: ['compileLess', function(next) {
-            if (!args['skip-css']) {
-                assetProcessor.getCssFiles(next);
-            } else {
-                next();
-            }
-        }],
-        getImageFiles: [function(next) {
-            if (args['list-images']) {
-                assetProcessor.getImageFiles(next);
-            } else {
-                next();
-            }
-        }],
-        getExtraFiles: [function(next) {
-            if (args['list-extras']) {
-                assetProcessor.getExtraFiles(next);
-            } else {
-                next();
-            }
-        }],
-        ensureAssets: [function(next) {
-            if (args.u || args.upload) {
-                console.log('Ensuring assets');
-                assetProcessor.ensureAssets(next);
-            } else {
-                next();
-            }
-        }],
-        formatResult: ['getJavaScriptFiles', 'getCssFiles', 'getImageFiles', 'getExtraFiles', 'ensureAssets', function (next, results) {
-            var result = {};
-            if (results.getJavaScriptFiles) {
-                result.javascripts = results.getJavaScriptFiles;
-            }
-            if (results.getCssFiles) {
-                result.stylesheets = results.getCssFiles;
-            }
-            if (results.getImageFiles) {
-                result.images = results.getImageFiles;
-            }
-            if (results.getExtraFiles) {
-                result.extras = results.getExtraFiles;
-            }
-            if (results.ensureAssets) {
-                result.cdn = results.ensureAssets;
-                // we don't want to output if things have changed or not
-                if (result.cdn) {
-                    delete result.cdn.jsChanged;
-                    delete result.cdn.cssChanged;
-                    delete result.cdn.imagesChanged;
-                    delete result.cdn.extrasChanged;
-                }
-            }
-            result = JSON.stringify(result, undefined, 4);
-            next(null, result);
-        }],
-        writeResult: ['formatResult', function (next, results) {
-            // allow the use of convention for asset path names. So if we are writing the processed asset list and no output
-            // filename is specified, we'll use path/name of configuration file except replace "config" with "assets".
-            var outputFilename = path.basename(configPath, path.extname(configPath)).replace(/(asset)?config$/i, '') + 'Assets.json';
-
-            if (outputFilename === 'Assets.json') {
-                // edge case where config is called "config.json" and there is no prefix here, lets just make output file name start lowercase.
-                outputFilename = outputFilename.toLowerCase();
-            }
-
-            // now we figure out if we're actually going to write a file or not
-            var outputPath = typeof args.o !== 'undefined'
-                ? args.o === true ? path.resolve(path.dirname(configPath), outputFilename)
-                : args.o
-                : null;
-
-            if (outputPath) {
-                // write to file
-                console.log('Writing asset file to ' + outputPath);
-                fs.writeFile(outputPath, results.formatResult, next);
-            } else {
-                // output to console
-                console.log(results.formatResult);
-                next();
-            }
-        }]
-    }, function (err) {
-        if (err) {
-            console.error(err);
-            throw err;
-        }
-    });
 });
 
 /**
