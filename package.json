@@ -5,6 +5,10 @@
     "start": "node process.js",
     "test": "nodeunit"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Footage-Firm/asset-processor.git"
+  },
   "dependencies": {
     "async": "0.x",
     "clean-css": "^2.1.8",
