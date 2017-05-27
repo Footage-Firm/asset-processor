@@ -1,0 +1,11 @@
+{
+    "targets": {
+        "javascripts": {
+            "javascripts": {
+                "files": [
+                    "test/test-files/js/js_excluded/withES6Syntax.js"
+                ]
+            }
+        }
+    }
+}

@@ -19,7 +19,7 @@
     "minimist": "0.0.8",
     "node-dir": "^0.1.5",
     "request": "^2.47.0",
-    "uglify-js": "^2.4.13",
+    "uglify-js": "^2.8.27",
     "underscore": "^1.6.0"
   },
   "devDependencies": {

@@ -222,16 +222,42 @@ exports.testUploadJavaScriptToCdn = function(test) {
             test.ok(js);
             test.equal(-1, js.indexOf('longVariableName'));
             test.ok(js.indexOf('\n') === -1 || js.indexOf('\n') > 100); // newline added at end of file for source mapping, but none before that
-            test.ok(js.indexOf('"1"') < js.indexOf('"2"'));
-            test.ok(js.indexOf('"2"') < js.indexOf('"3"'));
-            test.ok(js.indexOf('"3"') < js.indexOf('"4"'));
-            test.ok(js.indexOf('"5"') < js.indexOf('"6"'));
+            test.ok(js.indexOf('1') < js.indexOf('2'));
+            test.ok(js.indexOf('2') < js.indexOf('3'));
+            test.ok(js.indexOf('3') < js.indexOf('4'));
+            test.ok(js.indexOf('5') < js.indexOf('6'));
 
             next();
         }]
     });
 
 };
+
+exports.testUploadJavaScriptToCdn_withErrors = function(test) {
+
+    var otherAssetProcessor = _assetProcessorForTestConfig('test-config-withErrors.json');
+
+    test.expect(2);
+
+    th.runTest(test, {
+        uploadJavaScriptToCdn: [function(next) {
+            otherAssetProcessor.uploadJavaScriptToCdn(function(err) {
+                next(null, err);
+            });
+        }],
+        assertResult: ['uploadJavaScriptToCdn', function(next, results) {
+
+            var err = results.uploadJavaScriptToCdn;
+
+            test.ok(err);
+            test.ok(err.message.match(/unexpected token/i));
+
+            next();
+        }]
+    });
+
+};
+
 
 exports.testUploadCssToCdn = function(test) {
 
