@@ -13,3 +13,5 @@ test/test-files/import/
 
 #ide
 .idea
+
+npm-debug.log

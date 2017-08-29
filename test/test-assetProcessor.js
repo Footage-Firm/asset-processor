@@ -1,26 +1,25 @@
 'use strict';
 
-var _ = require('underscore');
-var path = require('path');
-var fs = require('fs-extra');
-var request = require('request');
-var zlib    = require('zlib');
+const _ = require('underscore');
+const path = require('path');
+const fs = require('fs-extra');
+const request = require('request');
+const zlib = require('zlib');
+const NodeunitAsync = require('nodeunit-async');
 
-var AssetProcessor = require('../lib/assetProcessor');
-
-var NodeunitAsync = require('nodeunit-async');
+const AssetProcessor = require('../lib/assetProcessor');
 
 // create our TestHelper
-var th = new NodeunitAsync();
+const th = new NodeunitAsync();
 
 // secret credentials for test that use s3 and git
-var credentialsPath = path.join(__dirname, 'credentials.json');
-var credentials = {};
+const credentialsPath = path.join(__dirname, 'credentials.json');
+let credentials = {};
 
 try {
     credentials = fs.readJsonFileSync(credentialsPath);
 } catch (err) {
-    console.error('Unable to read '+credentialsPath+' for unit test credentials');
+    console.error('Unable to read ' + credentialsPath + ' for unit test credentials');
     console.error('Please create a file with a structure like: ');
     console.error(JSON.stringify({
         "s3": {
@@ -35,7 +34,7 @@ try {
 }
 
 // Common assetProcessor used for majority of tests
-var assetProcessor = _assetProcessorForTestConfig('test-config.json');
+const assetProcessor = _assetProcessorForTestConfig('test-config.json');
 
 exports.testGetJavaScriptFiles = function(test) {
 
@@ -46,8 +45,8 @@ exports.testGetJavaScriptFiles = function(test) {
             assetProcessor.getJavaScriptFiles(next);
         }],
         assertResult: ['getJavaScriptFiles', function(next, results) {
-            var files = results && results.getJavaScriptFiles;
-            var expected = [
+            const files = results && results.getJavaScriptFiles;
+            const expected = [
                 'js/js_directory_1/one.js',
                 'js/js_directory_2/two.js',
                 'js/js_directory_1/three.js',
@@ -77,8 +76,8 @@ exports.testGetCssFiles = function(test) {
             assetProcessor.getCssFiles(next);
         }],
         assertResult: ['getCssFiles', function(next, results) {
-            var files = results && results.getCssFiles;
-            var expected = [
+            const files = results && results.getCssFiles;
+            const expected = [
                 'css/css_directory_1/one.css',
                 'css/css_directory_2/two.css',
                 'css/css_directory_1/three.css',
@@ -107,8 +106,8 @@ exports.testGetImageFiles = function(test) {
             assetProcessor.getImageFiles(next);
         }],
         assertResult: ['getImageFiles', function(next, results) {
-            var files = results && results.getImageFiles;
-            var expected = [
+            const files = results && results.getImageFiles;
+            const expected = [
                 'img/img_directory_1/grey_wash_wall.png',
                 'img/img_directory_1/mooning.png',
                 'img/img_directory_2/purty_wood.png',
@@ -129,8 +128,8 @@ exports.testGetExtraFiles = function(test) {
             assetProcessor.getExtraFiles(next);
         }],
         assertResult: ['getExtraFiles', function(next, results) {
-            var files = results && results.getExtraFiles;
-            var expected = [
+            const files = results && results.getExtraFiles;
+            const expected = [
                 'extra/fonts/FontAwesome.otf',
                 'extra/fonts/fontawesome-webfont.eot',
                 'extra/fonts/fontawesome-webfont.svg',
@@ -153,7 +152,7 @@ exports.testGetFilesNormalizedFullPaths = function(test) {
             assetProcessor.getCssFiles(true, next);
         }],
         assertResult: ['getCssFiles', function(next, results) {
-            var files = results && results.getCssFiles;
+            const files = results && results.getCssFiles;
             test.ok(files[0] && files[0].indexOf(path.join(__dirname, 'test-files', 'css')) === 0);
             next();
         }]
@@ -162,7 +161,7 @@ exports.testGetFilesNormalizedFullPaths = function(test) {
 
 exports.testCompileLessFiles = function(test) {
 
-    var filesToCreate = [
+    const filesToCreate = [
         path.join(__dirname, 'test-files', 'css', 'css_directory_1', 'three.css'),
         path.join(__dirname, 'test-files', 'mixed', 'mixed_directory_2', 'anywhere4.css')
     ];
@@ -180,7 +179,7 @@ exports.testCompileLessFiles = function(test) {
             assetProcessor.compileLessFiles(next);
         }],
         assertResult: ['compileLessFiles', function(next, results) {
-            var files = results && results.compileLessFiles || [];
+            const files = results && results.compileLessFiles || [];
             test.ok(files.some(function(file) {
                 return path.basename(file) === 'three.css';
             }));
@@ -190,7 +189,7 @@ exports.testCompileLessFiles = function(test) {
 
             //TODO: modify nodeunit async to have a per-test teardown; otherwise failure here could screw thing up
             filesToCreate.forEach(function(file) {
-                var deletedPath = file+'.deleted';
+                const deletedPath = file+'.deleted';
                 if (fs.existsSync(deletedPath)) {
                     fs.copySync(deletedPath ,file);
                     fs.unlinkSync(deletedPath);
@@ -216,7 +215,7 @@ exports.testUploadJavaScriptToCdn = function(test) {
         }],
         assertResult: ['download', function(next, results) {
 
-            var js = results.download && results.download || '';
+            const js = results.download && results.download || '';
 
             test.ok(results.uploadJavaScriptToCdn);
             test.ok(js);
@@ -235,7 +234,7 @@ exports.testUploadJavaScriptToCdn = function(test) {
 
 exports.testUploadJavaScriptToCdn_withErrors = function(test) {
 
-    var otherAssetProcessor = _assetProcessorForTestConfig('test-config-withErrors.json');
+    const otherAssetProcessor = _assetProcessorForTestConfig('test-config-withErrors.json');
 
     test.expect(2);
 
@@ -247,7 +246,7 @@ exports.testUploadJavaScriptToCdn_withErrors = function(test) {
         }],
         assertResult: ['uploadJavaScriptToCdn', function(next, results) {
 
-            var err = results.uploadJavaScriptToCdn;
+            const err = results.uploadJavaScriptToCdn;
 
             test.ok(err);
             test.ok(err.message.match(/unexpected token/i));
@@ -272,8 +271,8 @@ exports.testUploadCssToCdn = function(test) {
         }],
         assertResult: ['download', function(next, results) {
 
-            var css = results.download && results.download || '';
-            var bucket = credentials.s3 && credentials.s3.bucket || 'my-aws-s3-bucket';
+            const css = results.download && results.download || '';
+            const bucket = credentials.s3 && credentials.s3.bucket || 'my-aws-s3-bucket';
 
             test.ok(results.uploadCssToCdn);
 
@@ -305,7 +304,7 @@ exports.testUploadImagesToCdn = function(test) {
             assetProcessor.uploadImagesToCdn(next);
         }],
         download: ['uploadImagesToCdn', function(next, results) {
-            var sampleImageUrl = results.uploadImagesToCdn+'/img_directory_2/purty_wood.png';
+            const sampleImageUrl = results.uploadImagesToCdn+'/img_directory_2/purty_wood.png';
             request(sampleImageUrl, function(err, response, body) {
                 next(err, !err && response.statusCode === 200 && (''+body).length);
             });
@@ -330,7 +329,7 @@ exports.testUploadExtrasToCdn = function(test) {
             assetProcessor.uploadExtrasToCdn(next);
         }],
         download: ['uploadExtrasToCdn', function(next, results) {
-            var sampleImageUrl = results.uploadExtrasToCdn+'/fonts/FontAwesome.otf';
+            const sampleImageUrl = results.uploadExtrasToCdn+'/fonts/FontAwesome.otf';
             request(sampleImageUrl, function(err, response, body) {
                 next(err, !err && response.statusCode === 200 && (''+body).length);
             });
@@ -348,8 +347,8 @@ exports.testUploadExtrasToCdn = function(test) {
 };
 
 function _downloadAndUncompress(url, callback) {
-    var stream = request(url).pipe(zlib.createGunzip());
-    var uncompressed = '';
+    const stream = request(url).pipe(zlib.createGunzip());
+    let uncompressed = '';
 
     stream.on('data', function(data) {
         uncompressed += data;
@@ -373,7 +372,7 @@ exports.testEnsureAssets = function(test) {
             assetProcessor.ensureAssets(next);
         }],
         assertResult: ['ensureAssets', function(next, results) {
-            var ensureResult = results.ensureAssets || {};
+            const ensureResult = results.ensureAssets || {};
 
             test.notEqual('undefined', typeof ensureResult.jsUrl);
             test.notEqual('undefined', typeof ensureResult.jsChanged);
@@ -393,7 +392,7 @@ exports.testEnsureAssets = function(test) {
 exports.testTargetFiles = function(test) {
 
     // we will use a different configuration than other tests
-    var otherAssetProcessor = _assetProcessorForTestConfig('test-config-2.json');
+    const otherAssetProcessor = _assetProcessorForTestConfig('test-config-2.json');
 
     test.expect(4);
 
@@ -426,7 +425,7 @@ exports.testTargetFiles = function(test) {
 exports.testUploadExtrasToCdnCloudfront = function(test) {
 
     // we will use a different configuration than other tests
-    var otherAssetProcessor = _assetProcessorForTestConfig('test-config-3.json');
+    const otherAssetProcessor = _assetProcessorForTestConfig('test-config-3.json');
 
     test.expect(2);
 
@@ -443,49 +442,50 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
 
 };
 
-exports.testImportLatestStylesheets = function(test) {
 
-    // we will use a different configuration than other tests
-    var otherAssetProcessor = _assetProcessorForTestConfig('test-config-4.json');
-    var importDir = path.resolve(__dirname, 'test-files', 'import');
-
-    var expectedFile1 = path.resolve(importDir, 'audioblocks-style-custom.css');
-    var expectedFile2 = path.resolve(importDir, 'global-style-custom.css');
-
-    if (!credentials.git) {
-        console.warn('With no git credentials this test will fail');
-    }
-
-    // clean up any previous tests
-    if (fs.existsSync(importDir)) {
-        fs.removeSync(importDir);
-    }
-    // simulate existing files
-    fs.mkdirpSync(importDir);
-    fs.writeFileSync(expectedFile1, 'existing file1');
-    fs.writeFileSync(expectedFile2, 'existing file2');
-
-    test.expect(4);
-
-    th.runTest(test, {
-        uploadExtrasToCdn: [function(next) {
-            otherAssetProcessor.importLatestStylesheets(next);
-        }],
-        assertResult: ['uploadExtrasToCdn', function(next) {
-            var css1 = fs.existsSync(expectedFile1) && fs.readFileSync(expectedFile1, 'utf8');
-            var css2 = fs.existsSync(expectedFile2) && fs.readFileSync(expectedFile2, 'utf8');
-
-
-            test.ok(css1 && css1.length > 1000);
-            test.ok(css1 && css1.indexOf('mapped/path/to/images/home/home-notes-dark-blue.png') > 0);
-            test.ok(css2 && css2.length > 200);
-            test.ok(css2 && css2.indexOf('another/mapping/for/fonts/fontawesome-webfont.eot') > 0);
-
-            next();
-        }]
-    });
-
-};
+// NOTE: The files this is trying to pull from github do not exist anymore
+// exports.testImportLatestStylesheets = function(test) {
+//
+//     // we will use a different configuration than other tests
+//     const otherAssetProcessor = _assetProcessorForTestConfig('test-config-4.json');
+//     const importDir = path.resolve(__dirname, 'test-files', 'import');
+//
+//     const expectedFile1 = path.resolve(importDir, 'audioblocks-style-custom.css');
+//     const expectedFile2 = path.resolve(importDir, 'global-style-custom.css');
+//
+//     if (!credentials.git) {
+//         console.warn('With no git credentials this test will fail');
+//     }
+//
+//     // clean up any previous tests
+//     if (fs.existsSync(importDir)) {
+//         fs.removeSync(importDir);
+//     }
+//     // simulate existing files
+//     fs.mkdirpSync(importDir);
+//     fs.writeFileSync(expectedFile1, 'existing file1');
+//     fs.writeFileSync(expectedFile2, 'existing file2');
+//
+//     test.expect(4);
+//
+//     th.runTest(test, {
+//         uploadExtrasToCdn: [function(next) {
+//             otherAssetProcessor.importLatestStylesheets(next);
+//         }],
+//         assertResult: ['uploadExtrasToCdn', function(next) {
+//             const css1 = fs.existsSync(expectedFile1) && fs.readFileSync(expectedFile1, 'utf8');
+//             const css2 = fs.existsSync(expectedFile2) && fs.readFileSync(expectedFile2, 'utf8');
+//
+//             test.ok(css1 && css1.length > 1000);
+//             test.ok(css1 && css1.indexOf('mapped/path/to/images/home/home-notes-dark-blue.png') > 0);
+//             test.ok(css2 && css2.length > 200);
+//             test.ok(css2 && css2.indexOf('another/mapping/for/fonts/fontawesome-webfont.eot') > 0);
+//
+//             next();
+//         }]
+//     });
+//
+// };
 
 /**
  * Helper function that creates an AssetProcessor for the given config file
@@ -495,8 +495,8 @@ exports.testImportLatestStylesheets = function(test) {
  */
 function _assetProcessorForTestConfig(configFile) {
     // we will use a different configuration than other tests
-    var configPath = path.resolve(__dirname, 'test-files', configFile);
-    var config = fs.readJsonFileSync(configPath);
+    const configPath = path.resolve(__dirname, 'test-files', configFile);
+    const config = fs.readJsonFileSync(configPath);
 
     // mix in secret credentials to hard coded configs
     config.s3 = _.extend(config.s3 || {}, credentials.s3);
