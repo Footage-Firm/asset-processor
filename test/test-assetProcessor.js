@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const _ = require('underscore');
 const path = require('path');
 const fs = require('fs-extra');
@@ -12,26 +14,20 @@ const AssetProcessor = require('../lib/assetProcessor');
 // create our TestHelper
 const th = new NodeunitAsync();
 
-// secret credentials for test that use s3 and git
-const credentialsPath = path.join(__dirname, 'credentials.json');
-let credentials = {};
-
-try {
-    credentials = fs.readJsonFileSync(credentialsPath);
-} catch (err) {
-    console.error('Unable to read ' + credentialsPath + ' for unit test credentials');
-    console.error('Please create a file with a structure like: ');
-    console.error(JSON.stringify({
-        "s3": {
-            "bucket": "aws-s3-bucket",
-            "key": "aws-s3-key",
-            "secret": "aws-s3-secret"
-        },
-        "git": {
-            "token": "github-token"
-        }
-    }, undefined, 2));
+if (_.any(['S3_BUCKET', 'S3_ACCESS_KEY', 'S3_SECRET', 'GITHUB_OAUTH_TOKEN'], k => { return _.isUndefined(process.env[k]); })) {
+    throw new Error("Missing required configuration. Do you have a .env file?");
 }
+
+const credentials = {
+    s3: {
+        bucket: process.env.S3_BUCKET,
+        key: process.env.S3_ACCESS_KEY,
+        secret: process.env.S3_SECRET
+    },
+    git: {
+        token: process.env.GITHUB_OAUTH_TOKEN
+    }
+};
 
 // Common assetProcessor used for majority of tests
 const assetProcessor = _assetProcessorForTestConfig('test-config.json');

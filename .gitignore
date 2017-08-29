@@ -2,7 +2,7 @@
 node_modules
 
 #credentials used by unit tests
-test/credentials.json
+.env
 
 #unit test generated files
 test/test-files/import/
