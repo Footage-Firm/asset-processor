@@ -1,6 +1,6 @@
 {
   "name": "asset-processor",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "start": "node process.js",
     "test": "./node_modules/.bin/nodeunit"
