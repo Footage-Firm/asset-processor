@@ -116,7 +116,8 @@ async.auto({
             console.log('Ensuring assets');
             assetProcessor.ensureAssets(next);
         } else {
-            next();
+            console.log('Processing assets');
+            assetProcessor.processAssets(next);
         }
     }],
     formatResult: ['getJavaScriptFiles', 'getCssFiles', 'getImageFiles', 'getExtraFiles', 'ensureAssets', function(next, results) {
