@@ -116,7 +116,7 @@ async.auto({
             console.log('Ensuring assets');
             assetProcessor.ensureAssets(next);
         } else if (args.l || args.localcdn) {
-            console.log('Processing local assets');
+            console.log('Processing assets and saving locally');
             assetProcessor.processAssets(next);
         } else {
             next(null, {});
