@@ -115,8 +115,11 @@ async.auto({
         if (args.u || args.upload) {
             console.log('Ensuring assets');
             assetProcessor.ensureAssets(next);
+        } else if (args.l || args.localcdn) {
+            console.log('Processing assets and saving locally');
+            assetProcessor.processAssets(next);
         } else {
-            next();
+            next(null, {});
         }
     }],
     formatResult: ['getJavaScriptFiles', 'getCssFiles', 'getImageFiles', 'getExtraFiles', 'ensureAssets', function(next, results) {
