@@ -427,7 +427,7 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
     test.expect(2);
 
     th.runTest(test, {
-        remove: [function(next) {
+        uploadExtrasToCdn: [function(next) {
             otherAssetProcessor.uploadExtrasToCdn(next);
         }],
         assertResult: ['uploadExtrasToCdn', function(next, results) {
