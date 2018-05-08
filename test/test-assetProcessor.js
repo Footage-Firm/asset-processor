@@ -4,8 +4,7 @@ require('dotenv').config();
 
 const _ = require('underscore');
 const path = require('path');
-const fsExtra = require('fs-extra');
-const fs = require('fs');
+const fs = require('fs-extra');
 const request = require('request');
 const zlib = require('zlib');
 const NodeunitAsync = require('nodeunit-async');
@@ -167,8 +166,8 @@ exports.testCompileLessFiles = function(test) {
     test.expect(2);
 
     filesToCreate.forEach(function(file) {
-        fsExtra.copySync(file, file+'.deleted');
-        fsExtra.unlinkSync(file);
+        fs.copySync(file, file+'.deleted');
+        fs.unlinkSync(file);
     });
 
     th.runTest(test, {
@@ -187,9 +186,9 @@ exports.testCompileLessFiles = function(test) {
             //TODO: modify nodeunit async to have a per-test teardown; otherwise failure here could screw thing up
             filesToCreate.forEach(function(file) {
                 const deletedPath = file+'.deleted';
-                if (fsExtra.existsSync(deletedPath)) {
-                    fsExtra.copySync(deletedPath ,file);
-                    fsExtra.unlinkSync(deletedPath);
+                if (fs.existsSync(deletedPath)) {
+                    fs.copySync(deletedPath ,file);
+                    fs.unlinkSync(deletedPath);
                 }
             });
 
@@ -443,7 +442,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 
     // we will use a different configuration than other tests
     const configPath = path.resolve(__dirname, 'test-files', 'test-config-5.json');
-    const config = fsExtra.readJsonFileSync(configPath);
+    const config = fs.readJsonFileSync(configPath);
     config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
     const otherAssetProcessor = new AssetProcessor(config);
 
@@ -481,13 +480,13 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 //     }
 //
 //     // clean up any previous tests
-//     if (fsExtra.existsSync(importDir)) {
-//         fsExtra.removeSync(importDir);
+//     if (fs.existsSync(importDir)) {
+//         fs.removeSync(importDir);
 //     }
 //     // simulate existing files
-//     fsExtra.mkdirpSync(importDir);
-//     fsExtra.writeFileSync(expectedFile1, 'existing file1');
-//     fsExtra.writeFileSync(expectedFile2, 'existing file2');
+//     fs.mkdirpSync(importDir);
+//     fs.writeFileSync(expectedFile1, 'existing file1');
+//     fs.writeFileSync(expectedFile2, 'existing file2');
 //
 //     test.expect(4);
 //
@@ -496,8 +495,8 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 //             otherAssetProcessor.importLatestStylesheets(next);
 //         }],
 //         assertResult: ['uploadExtrasToCdn', function(next) {
-//             const css1 = fsExtra.existsSync(expectedFile1) && fsExtra.readFileSync(expectedFile1, 'utf8');
-//             const css2 = fsExtra.existsSync(expectedFile2) && fsExtra.readFileSync(expectedFile2, 'utf8');
+//             const css1 = fs.existsSync(expectedFile1) && fs.readFileSync(expectedFile1, 'utf8');
+//             const css2 = fs.existsSync(expectedFile2) && fs.readFileSync(expectedFile2, 'utf8');
 //
 //             test.ok(css1 && css1.length > 1000);
 //             test.ok(css1 && css1.indexOf('mapped/path/to/images/home/home-notes-dark-blue.png') > 0);
@@ -519,7 +518,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 function _assetProcessorForTestConfig(configFile) {
     // we will use a different configuration than other tests
     const configPath = path.resolve(__dirname, 'test-files', configFile);
-    const config = fsExtra.readJsonFileSync(configPath);
+    const config = fs.readJsonFileSync(configPath);
 
     // mix in secret credentials to hard coded configs
     config.s3 = _.extend(config.s3 || {}, credentials.s3);
