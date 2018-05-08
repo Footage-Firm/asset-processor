@@ -27,6 +27,10 @@ if (args.f || args.force) {
     config.forceCdnUpdate = true;
 }
 
+if (!args.r && !args.rebaseurls) {
+    delete config.s3;
+}
+
 assetProcessor = new AssetProcessor(config);
 
 // Lets always output results of checking for changes
