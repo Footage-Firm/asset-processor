@@ -1,0 +1,30 @@
+{
+  "s3": {
+    "cloudfrontMapping": "dummyCfMapping"
+  },
+  "targets": {
+    "javascripts": {
+      "files": [
+        "js/js_directory_1/one.js",
+        "js/js_directory_2/two.js",
+        "js/js_directory_1/three.js"
+      ]
+    },
+    "stylesheets": {
+      "files": [
+        "css/css_directory_1/one.css",
+        "css/css_directory_2/two.css",
+        "css/css_directory_1/three.css"
+      ]
+    },
+    "images": {
+      "root": "img",
+      "directories": [
+        "."
+      ]
+    },
+    "extras": {
+      "root": "extra"
+    }
+  }
+}

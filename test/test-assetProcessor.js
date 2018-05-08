@@ -4,7 +4,8 @@ require('dotenv').config();
 
 const _ = require('underscore');
 const path = require('path');
-const fs = require('fs-extra');
+const fsExtra = require('fs-extra');
+const fs = require('fs');
 const request = require('request');
 const zlib = require('zlib');
 const NodeunitAsync = require('nodeunit-async');
@@ -166,8 +167,8 @@ exports.testCompileLessFiles = function(test) {
     test.expect(2);
 
     filesToCreate.forEach(function(file) {
-        fs.copySync(file, file+'.deleted');
-        fs.unlinkSync(file);
+        fsExtra.copySync(file, file+'.deleted');
+        fsExtra.unlinkSync(file);
     });
 
     th.runTest(test, {
@@ -186,9 +187,9 @@ exports.testCompileLessFiles = function(test) {
             //TODO: modify nodeunit async to have a per-test teardown; otherwise failure here could screw thing up
             filesToCreate.forEach(function(file) {
                 const deletedPath = file+'.deleted';
-                if (fs.existsSync(deletedPath)) {
-                    fs.copySync(deletedPath ,file);
-                    fs.unlinkSync(deletedPath);
+                if (fsExtra.existsSync(deletedPath)) {
+                    fsExtra.copySync(deletedPath ,file);
+                    fsExtra.unlinkSync(deletedPath);
                 }
             });
 
@@ -426,12 +427,38 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
     test.expect(2);
 
     th.runTest(test, {
-        uploadExtrasToCdn: [function(next) {
+        remove: [function(next) {
             otherAssetProcessor.uploadExtrasToCdn(next);
         }],
         assertResult: ['uploadExtrasToCdn', function(next, results) {
             test.ok(results.uploadExtrasToCdn && results.uploadExtrasToCdn.indexOf('cloudfront') >= 0);
             test.ok(results.uploadExtrasToCdn && results.uploadExtrasToCdn.indexOf('dummyCfMapping') >= 0);
+            next();
+        }]
+    });
+
+};
+
+exports.testUseCloudFrontWithoutS3 = function(test) {
+
+    // we will use a different configuration than other tests
+    const configPath = path.resolve(__dirname, 'test-files', 'test-config-5.json');
+    const config = fsExtra.readJsonFileSync(configPath);
+    config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
+    const otherAssetProcessor = new AssetProcessor(config);
+
+    test.expect(1);
+
+    th.runTest(test, {
+        processAssets: [function(next) {
+            otherAssetProcessor.processAssets(next);
+        }],
+        assertResult: ['processAssets', function(next, results) {
+
+            const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
+            const cssFile = fs.readFileSync(cssFilePath).toString();
+
+            test.ok(cssFile.indexOf('https://dummyCfMapping.cloudfront.net/img') >= 0);
             next();
         }]
     });
@@ -454,13 +481,13 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
 //     }
 //
 //     // clean up any previous tests
-//     if (fs.existsSync(importDir)) {
-//         fs.removeSync(importDir);
+//     if (fsExtra.existsSync(importDir)) {
+//         fsExtra.removeSync(importDir);
 //     }
 //     // simulate existing files
-//     fs.mkdirpSync(importDir);
-//     fs.writeFileSync(expectedFile1, 'existing file1');
-//     fs.writeFileSync(expectedFile2, 'existing file2');
+//     fsExtra.mkdirpSync(importDir);
+//     fsExtra.writeFileSync(expectedFile1, 'existing file1');
+//     fsExtra.writeFileSync(expectedFile2, 'existing file2');
 //
 //     test.expect(4);
 //
@@ -469,8 +496,8 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
 //             otherAssetProcessor.importLatestStylesheets(next);
 //         }],
 //         assertResult: ['uploadExtrasToCdn', function(next) {
-//             const css1 = fs.existsSync(expectedFile1) && fs.readFileSync(expectedFile1, 'utf8');
-//             const css2 = fs.existsSync(expectedFile2) && fs.readFileSync(expectedFile2, 'utf8');
+//             const css1 = fsExtra.existsSync(expectedFile1) && fsExtra.readFileSync(expectedFile1, 'utf8');
+//             const css2 = fsExtra.existsSync(expectedFile2) && fsExtra.readFileSync(expectedFile2, 'utf8');
 //
 //             test.ok(css1 && css1.length > 1000);
 //             test.ok(css1 && css1.indexOf('mapped/path/to/images/home/home-notes-dark-blue.png') > 0);
@@ -492,7 +519,7 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
 function _assetProcessorForTestConfig(configFile) {
     // we will use a different configuration than other tests
     const configPath = path.resolve(__dirname, 'test-files', configFile);
-    const config = fs.readJsonFileSync(configPath);
+    const config = fsExtra.readJsonFileSync(configPath);
 
     // mix in secret credentials to hard coded configs
     config.s3 = _.extend(config.s3 || {}, credentials.s3);
