@@ -438,6 +438,32 @@ exports.testUploadExtrasToCdnCloudfront = function(test) {
 
 };
 
+exports.testUseCloudFrontWithoutS3 = function(test) {
+
+    // we will use a different configuration than other tests
+    const configPath = path.resolve(__dirname, 'test-files', 'test-config-5.json');
+    const config = fs.readJsonFileSync(configPath);
+    config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
+    const otherAssetProcessor = new AssetProcessor(config);
+
+    test.expect(1);
+
+    th.runTest(test, {
+        processAssets: [function(next) {
+            otherAssetProcessor.processAssets(next);
+        }],
+        assertResult: ['processAssets', function(next, results) {
+
+            const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
+            const cssFile = fs.readFileSync(cssFilePath).toString();
+
+            test.ok(cssFile.indexOf('https://dummyCfMapping.cloudfront.net/img') >= 0);
+            next();
+        }]
+    });
+
+};
+
 
 // NOTE: The files this is trying to pull from github do not exist anymore
 // exports.testImportLatestStylesheets = function(test) {
