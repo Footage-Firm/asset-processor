@@ -280,9 +280,9 @@ exports.testUploadCssToCdn = function(test) {
             test.ok(css.indexOf('.p1') < css.indexOf('.p3'));
 
             // Tests the URL Rebase
-            test.notEqual(-1, css.indexOf('url('+bucket+'/img/img_directory_1/grey_wash_wall.png)'));
-            test.notEqual(-1, css.indexOf('url('+bucket+'/img/img_directory_1/mooning.png)'));
-            test.notEqual(-1, css.indexOf('url('+bucket+'/extra/fonts/fontawesome-webfont.woff)'));
+            test.notEqual(-1, css.indexOf('url(/'+bucket+'/img/img_directory_1/grey_wash_wall.png)'));
+            test.notEqual(-1, css.indexOf('url(/'+bucket+'/img/img_directory_1/mooning.png)'));
+            test.notEqual(-1, css.indexOf('url(/'+bucket+'/extra/fonts/fontawesome-webfont.woff)'));
             test.notEqual(-1, css.indexOf('url(//fonts.googleapis.com/css?family=Roboto:400,300,500,500italic,700,900,400italic,700italic)'));
             test.notEqual(-1, css.indexOf('url(https://themes.googleusercontent.com/static/fonts/opensans/v8/MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff)'));
             test.ok(css.indexOf('url(data:image/png;base64') > 0);
