@@ -366,7 +366,7 @@ exports.testEnsureAssets = function(test) {
 
     th.runTest(test, {
         ensureAssets: [function(next) {
-            assetProcessor.ensureAssets({}, next);
+            assetProcessor.ensureAssets(next);
         }],
         assertResult: ['ensureAssets', function(next, results) {
             const ensureResult = results.ensureAssets || {};
@@ -451,7 +451,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 
     th.runTest(test, {
         processAssets: [function(next) {
-            otherAssetProcessor.processAssets({}, next);
+            otherAssetProcessor.processAssets(next);
         }],
         assertResult: ['processAssets', function(next, results) {
 

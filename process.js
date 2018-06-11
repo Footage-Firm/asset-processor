@@ -56,6 +56,10 @@ if (args.v || args.verbose) {
     console.log('Checking if repository is up to date');
 }
 
+const opts = {
+    skipJs: args['skip-js']
+};
+
 async.auto({
     versionUpToDate: [function(next) {
         var ignoreVersioning = args.i || args.ignore;
@@ -118,10 +122,10 @@ async.auto({
     ensureAssets: ['versionUpToDate', function(next) {
         if (args.u || args.upload) {
             console.log('Ensuring assets');
-            assetProcessor.ensureAssets(args, next);
+            assetProcessor.ensureAssets(opts, next);
         } else if (args.l || args.localcdn) {
             console.log('Processing assets and saving locally');
-            assetProcessor.processAssets(args, next);
+            assetProcessor.processAssets(opts, next);
         } else {
             next(null, {});
         }
