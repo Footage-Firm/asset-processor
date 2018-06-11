@@ -118,10 +118,10 @@ async.auto({
     ensureAssets: ['versionUpToDate', function(next) {
         if (args.u || args.upload) {
             console.log('Ensuring assets');
-            assetProcessor.ensureAssets(next);
+            assetProcessor.ensureAssets(args, next);
         } else if (args.l || args.localcdn) {
             console.log('Processing assets and saving locally');
-            assetProcessor.processAssets(next);
+            assetProcessor.processAssets(args, next);
         } else {
             next(null, {});
         }
