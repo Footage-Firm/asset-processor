@@ -455,11 +455,18 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
         }],
         assertResult: ['processAssets', function(next, results) {
 
+            const jsFilePath = path.resolve(__dirname, 'test-files', 'js', results.processAssets.jsUrl.split('/').pop());
             const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
+
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
             // Test url rebase
             test.ok(cssFile.indexOf('/img') >= 0);
+
+            // Remove files generated from test
+            fs.removeSync(cssFilePath);
+            fs.removeSync(jsFilePath);
+
             next();
         }]
     });
