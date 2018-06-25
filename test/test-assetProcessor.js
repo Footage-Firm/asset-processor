@@ -475,16 +475,23 @@ exports.tearDown = function(cb) {
     const jsFiles = fs.readdirSync(jsDir).filter(file => file.endsWith('.js'));
     const cssFiles = fs.readdirSync(cssDir).filter(file => file.endsWith('.css'));
 
-    jsFiles.forEach(file => {
-        fs.unlinkSync(`${jsDir}/${file}`);
-    });
-
-    cssFiles.forEach(file => {
-        fs.unlinkSync(`${cssDir}/${file}`);
-    });
+    _removeFilesFromDir(jsDir, jsFiles);
+    _removeFilesFromDir(cssDir, cssFiles);
 
     cb();
 };
+
+/**
+ * Helper function that removes files from a directory
+ * @param dir name of directory to remove files from
+ * @param files the files to remove
+ * @private
+ */
+function _removeFilesFromDir(dir, files) {
+    files.forEach(file => {
+        fs.unlinkSync(`${dir}/${file}`);
+    });
+}
 
 // NOTE: The files this is trying to pull from github do not exist anymore
 // exports.testImportLatestStylesheets = function(test) {
