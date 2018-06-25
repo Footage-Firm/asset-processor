@@ -455,24 +455,36 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
         }],
         assertResult: ['processAssets', function(next, results) {
 
-            const jsFilePath = path.resolve(__dirname, 'test-files', 'js', results.processAssets.jsUrl.split('/').pop());
             const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
-
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
             // Test url rebase
             test.ok(cssFile.indexOf('/img') >= 0);
-
-            // Remove files generated from test
-            fs.removeSync(cssFilePath);
-            fs.removeSync(jsFilePath);
-
             next();
         }]
     });
 
 };
 
+// Run after each test.
+// Cleans up any generated files from tests.
+exports.tearDown = function(cb) {
+    const jsDir = path.resolve(__dirname, 'test-files', 'js');
+    const cssDir = path.resolve(__dirname, 'test-files', 'css');
+
+    const jsFiles = fs.readdirSync(jsDir).filter(file => file.endsWith('.js'));
+    const cssFiles = fs.readdirSync(cssDir).filter(file => file.endsWith('.css'));
+
+    jsFiles.forEach(file => {
+        fs.unlinkSync(`${jsDir}/${file}`);
+    });
+
+    cssFiles.forEach(file => {
+        fs.unlinkSync(`${cssDir}/${file}`);
+    });
+
+    cb();
+};
 
 // NOTE: The files this is trying to pull from github do not exist anymore
 // exports.testImportLatestStylesheets = function(test) {
