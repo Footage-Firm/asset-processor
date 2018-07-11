@@ -446,7 +446,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
     const config = fs.readJsonFileSync(configPath);
     config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
     const otherAssetProcessor = new AssetProcessor(config);
-    const opts = { filePath: 'test/out' };
+    const opts = { outputDir: 'test/out' };
 
     test.expect(1);
 
@@ -456,7 +456,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
         }],
         assertResult: ['processAssets', function(next, results) {
 
-            const cssFilePath = path.resolve(opts.filePath, 'css', results.processAssets.cssUrl.split('/').pop());
+            const cssFilePath = path.resolve(opts.outputDir, 'css', results.processAssets.cssUrl.split('/').pop());
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
             // Test url rebase
