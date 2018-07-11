@@ -446,16 +446,17 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
     const config = fs.readJsonFileSync(configPath);
     config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
     const otherAssetProcessor = new AssetProcessor(config);
+    const opts = { filePath: 'test/out' };
 
     test.expect(1);
 
     th.runTest(test, {
         processAssets: [function(next) {
-            otherAssetProcessor.processAssets(next);
+            otherAssetProcessor.processAssets(opts, next);
         }],
         assertResult: ['processAssets', function(next, results) {
 
-            const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
+            const cssFilePath = path.resolve(opts.filePath, 'css', results.processAssets.cssUrl.split('/').pop());
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
             // Test url rebase
@@ -465,33 +466,6 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
     });
 
 };
-
-// Run after each test.
-// Cleans up any generated files from tests.
-exports.tearDown = function(cb) {
-    const jsDir = path.resolve(__dirname, 'test-files', 'js');
-    const cssDir = path.resolve(__dirname, 'test-files', 'css');
-
-    const jsFiles = fs.readdirSync(jsDir).filter(file => file.endsWith('.js'));
-    const cssFiles = fs.readdirSync(cssDir).filter(file => file.endsWith('.css'));
-
-    _removeFilesFromDir(jsDir, jsFiles);
-    _removeFilesFromDir(cssDir, cssFiles);
-
-    cb();
-};
-
-/**
- * Helper function that removes files from a directory
- * @param dir name of directory to remove files from
- * @param files the files to remove
- * @private
- */
-function _removeFilesFromDir(dir, files) {
-    files.forEach(file => {
-        fs.unlinkSync(`${dir}/${file}`);
-    });
-}
 
 // NOTE: The files this is trying to pull from github do not exist anymore
 // exports.testImportLatestStylesheets = function(test) {

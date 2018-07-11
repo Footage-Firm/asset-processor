@@ -6,6 +6,7 @@ node_modules
 
 #unit test generated files
 test/test-files/import/
+test/out/
 
 #OS stuff
 .DS_Store
