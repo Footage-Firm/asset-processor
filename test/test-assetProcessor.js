@@ -446,16 +446,17 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
     const config = fs.readJsonFileSync(configPath);
     config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
     const otherAssetProcessor = new AssetProcessor(config);
+    const opts = { filePath: 'test/out' };
 
     test.expect(1);
 
     th.runTest(test, {
         processAssets: [function(next) {
-            otherAssetProcessor.processAssets(next);
+            otherAssetProcessor.processAssets(opts, next);
         }],
         assertResult: ['processAssets', function(next, results) {
 
-            const cssFilePath = path.resolve(__dirname, 'test-files', 'css', results.processAssets.cssUrl.split('/').pop());
+            const cssFilePath = path.resolve(opts.filePath, 'css', results.processAssets.cssUrl.split('/').pop());
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
             // Test url rebase
@@ -465,7 +466,6 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
     });
 
 };
-
 
 // NOTE: The files this is trying to pull from github do not exist anymore
 // exports.testImportLatestStylesheets = function(test) {
