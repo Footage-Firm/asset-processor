@@ -1,6 +1,6 @@
 {
   "name": "asset-processor",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "scripts": {
     "start": "node process.js",
     "test": "./node_modules/.bin/nodeunit"
@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "0.x",
     "clean-css": "^2.1.8",
-    "fs-extra": "^0.12.0",
+    "fs-extra": "^7.0.1",
     "knox": "^0.8.9",
     "less": "^1.7.0",
     "mime": "^1.2.11",
@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "dotenv": "^4.0.0",
-    "fs-extra": "0.x",
     "nodeunit": "^0.11.1",
     "nodeunit-async": "0.x"
   }
