@@ -443,7 +443,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 
     // we will use a different configuration than other tests
     const configPath = path.resolve(__dirname, 'test-files', 'test-config-5.json');
-    const config = fs.readJsonFileSync(configPath);
+    const config = fs.readJsonSync(configPath);
     config.root = path.normalize(path.resolve(path.dirname(configPath), config.root || '.'));
     const otherAssetProcessor = new AssetProcessor(config);
     const opts = { outputDir: 'test/out' };
@@ -520,7 +520,7 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
 function _assetProcessorForTestConfig(configFile) {
     // we will use a different configuration than other tests
     const configPath = path.resolve(__dirname, 'test-files', configFile);
-    const config = fs.readJsonFileSync(configPath);
+    const config = fs.readJsonSync(configPath);
 
     // mix in secret credentials to hard coded configs
     config.s3 = _.extend(config.s3 || {}, credentials.s3);
