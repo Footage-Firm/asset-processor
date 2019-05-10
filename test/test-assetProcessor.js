@@ -279,9 +279,10 @@ exports.testUploadCssToCdn = function(test) {
             test.ok(css.indexOf('.p2') < css.indexOf('.p1'));
             test.ok(css.indexOf('.p1') < css.indexOf('.p3'));
 
-            test.notEqual(-1, css.indexOf('url(https://s3.amazonaws.com/'+bucket+'/img/img_directory_1/grey_wash_wall.png)'));
-            test.notEqual(-1, css.indexOf('url(https://s3.amazonaws.com/'+bucket+'/img/img_directory_1/mooning.png)'));
-            test.notEqual(-1, css.indexOf('url(https://s3.amazonaws.com/'+bucket+'/extra/fonts/fontawesome-webfont.woff)'));
+            // Tests the URL Rebase
+            test.notEqual(-1, css.indexOf('url(/img/img_directory_1/grey_wash_wall.png)'));
+            test.notEqual(-1, css.indexOf('url(/img/img_directory_1/mooning.png)'));
+            test.notEqual(-1, css.indexOf('url(/extra/fonts/fontawesome-webfont.woff)'));
             test.notEqual(-1, css.indexOf('url(//fonts.googleapis.com/css?family=Roboto:400,300,500,500italic,700,900,400italic,700italic)'));
             test.notEqual(-1, css.indexOf('url(https://themes.googleusercontent.com/static/fonts/opensans/v8/MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff)'));
             test.ok(css.indexOf('url(data:image/png;base64') > 0);
@@ -458,7 +459,8 @@ exports.testUseCloudFrontWithoutS3 = function(test) {
             const cssFilePath = path.resolve(opts.outputDir, 'css', results.processAssets.cssUrl.split('/').pop());
             const cssFile = fs.readFileSync(cssFilePath).toString();
 
-            test.ok(cssFile.indexOf('https://dummyCfMapping.cloudfront.net/img') >= 0);
+            // Test url rebase
+            test.ok(cssFile.indexOf('/img') >= 0);
             next();
         }]
     });
