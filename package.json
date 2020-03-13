@@ -19,7 +19,7 @@
     "knox": "^0.8.9",
     "less": "^1.7.0",
     "mime": "^1.2.11",
-    "minimist": "0.0.8",
+    "minimist": "1.2.5",
     "node-dir": "^0.1.5",
     "request": "^2.47.0",
     "uglify-js": "^2.8.27",
