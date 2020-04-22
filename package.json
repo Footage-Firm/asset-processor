@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "async": "0.x",
-    "clean-css": "^2.1.8",
+    "clean-css": "^4.2.1",
     "fs-extra": "^7.0.1",
     "knox": "^0.8.9",
     "less": "^1.7.0",
